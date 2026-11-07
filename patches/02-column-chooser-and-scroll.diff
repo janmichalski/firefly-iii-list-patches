@@ -1,0 +1,278 @@
+--- a/resources/views/components/lists/groups-large.blade.php
++++ b/resources/views/components/lists/groups-large.blade.php
+@@ -1,22 +1,23 @@
+-<table class="table table-valign-middle table-sm table-hover">
++<div class="table-responsive">
++<table class="table table-valign-middle table-sm table-hover ff-groups-large">
+     <thead>
+     <tr>
+         @if($showCategory && $showBudget)
+-            <td colspan="9">
++            <td colspan="9" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="9">
+                 @if(method_exists($groups, 'links'))
+                     {{ $groups->links('pagination.bootstrap-4') }}
+                 @endif
+             </td>
+         @endif
+         @if($showCategory XOR $showBudget)
+-            <td colspan="8">
++            <td colspan="8" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="8">
+                 @if(method_exists($groups, 'links'))
+                     {{ $groups->links('pagination.bootstrap-4') }}
+                 @endif
+             </td>
+         @endif
+         @if(!$showCategory && !$showBudget)
+-            <td colspan="7">
++            <td colspan="7" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="7">
+                 @if(method_exists($groups, 'links'))
+                 {{ $groups->links('pagination.bootstrap-4') }}
+                     @endif
+@@ -25,7 +26,7 @@
+         <td class="d-xs-none text-end">
+             <!-- Single button -->
+             <div class="action-menu d-none"> <!-- d-none -->
+-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="top_action_menu" data-bs-toggle="dropdown" aria-expanded="false">
++                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="top_action_menu" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false">
+                     {{ __('firefly.actions') }}<span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="top_action_menu">
+@@ -44,19 +45,40 @@
+         <th>{{ trans('list.description') }}</th>
+         <th class="text-end">{{ trans('list.amount') }}</th>
+         @if(get_app_configuration('use_running_balance', true))
+-            <th class="text-end">{{ trans('list.running_balance') }}</th>
++            <th class="text-end" data-ff-col="balance">{{ trans('list.running_balance') }}</th>
+         @endif
+-        <th>{{ trans('list.date') }}</th>
+-        <th>{{ trans('list.source_account') }}</th>
+-        <th>{{ trans('list.destination_account') }}</th>
++        <th data-ff-col="date">{{ trans('list.date') }}</th>
++        <th data-ff-col="source">{{ trans('list.source_account') }}</th>
++        <th data-ff-col="destination">{{ trans('list.destination_account') }}</th>
+         @if($showCategory)
+-            <th class="d-xs-none">{{ trans('list.category') }}</th>
++            <th class="d-xs-none" data-ff-col="category">{{ trans('list.category') }}</th>
+         @endif
+         @if($showBudget)
+-            <th class="d-xs-none">{{ trans('list.budget') }}</th>
++            <th class="d-xs-none" data-ff-col="budget">{{ trans('list.budget') }}</th>
+         @endif
+         <th class="d-xs-none">&nbsp;</th><!-- actions -->
+-        <th class="d-xs-none">&nbsp;</th><!-- checkbox -->
++        <th class="d-xs-none text-end"><!-- checkbox; column chooser -->
++            <div class="dropdown ff-column-chooser">
++                <button class="btn btn-sm btn-link p-0 text-body-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="{{ __('firefly.visible_columns') }}" aria-label="{{ __('firefly.visible_columns') }}">
++                    <span class="bi bi-gear"></span>
++                </button>
++                <ul class="dropdown-menu dropdown-menu-end">
++                    <li><h6 class="dropdown-header">{{ __('firefly.visible_columns') }}</h6></li>
++                    @if(get_app_configuration('use_running_balance', true))
++                        <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="balance" checked> {{ trans('list.running_balance') }}</label></li>
++                    @endif
++                    <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="date" checked> {{ trans('list.date') }}</label></li>
++                    <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="source" checked> {{ trans('list.source_account') }}</label></li>
++                    <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="destination" checked> {{ trans('list.destination_account') }}</label></li>
++                    @if($showCategory)
++                        <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="category" checked> {{ trans('list.category') }}</label></li>
++                    @endif
++                    @if($showBudget)
++                        <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-ff-toggle="budget" checked> {{ trans('list.budget') }}</label></li>
++                    @endif
++                </ul>
++            </div>
++        </th>
+     </tr>
+     </thead>
+     <tbody>
+@@ -88,17 +110,17 @@
+             </td>
+             <!-- column to span accounts + extra fields -->
+             @if($showCategory && $showBudget)
+-                <td colspan="6" class="top-light-border">&nbsp;</td>
++                <td colspan="6" class="top-light-border" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="6">&nbsp;</td>
+             @endif
+             @if($showCategory XOR $showBudget)
+-                <td colspan="5" class="top-light-border">&nbsp;</td>
++                <td colspan="5" class="top-light-border" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="5">&nbsp;</td>
+             @endif
+             @if(!$showCategory && !$showBudget)
+-                <td colspan="4" class="top-light-border">&nbsp;</td>
++                <td colspan="4" class="top-light-border" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="4">&nbsp;</td>
+             @endif
+         <td class="top-light-border d-xs-none text-end">
+             <div class=""> <!-- d-none ? -->
+-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="group_menu_{{ $group['id'] }}" data-bs-toggle="dropdown" aria-expanded="false">{{ __('firefly.actions') }} <span class="caret"></span></button>
++                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="group_menu_{{ $group['id'] }}" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false">{{ __('firefly.actions') }} <span class="caret"></span></button>
+                 <ul class="dropdown-menu" aria-labelledby="group_menu_{{ $group['id'] }}">
+                     <li><a class="dropdown-item" href="{{ route('transactions.edit', [$group['id']]) }}?_from={{ urlencode($FF3_FROM) }}"><span class="bi bi-pencil"></span> {{ __('firefly.edit') }}</a></li>
+                     <li><a class="dropdown-item" href="{{ route('transactions.delete', [$group['id']]) }}?_from={{ urlencode($FF3_FROM) }}"><span class="text-danger bi bi-trash"></span> {{ __('firefly.delete') }}</a></li>
+@@ -148,7 +170,7 @@
+             />
+         </td>
+         @if(get_app_configuration('use_running_balance', true))
+-        <td class=" {{ $className }} text-end">
++        <td class=" {{ $className }} text-end" data-ff-col="balance">
+             <x-elements.transaction-running-balance
+                 :balance-dirty="($transaction['source_balance_dirty'] ?? false) || ($transaction['destination_balance_dirty'] ?? false)"
+                 :currency="['symbol' => $transaction['currency_symbol'],'decimal_places' => $transaction['currency_decimal_places']]"
+@@ -160,10 +182,10 @@
+             />
+         </td>
+         @endif
+-        <td class="{{ $className }}">
++        <td class="{{ $className }}" data-ff-col="date">
+             {{ $transaction['date']->isoFormat($monthAndDayFormat) }}
+         </td>
+-        <td class="{{ $className }}">
++        <td class="{{ $className }}" data-ff-col="source">
+             @if('Cash account' === $transaction['source_account_type'])
+                 <span class="text-success">({{ __('firefly.cash') }})</span>
+             @else
+@@ -171,7 +193,7 @@
+                title="{{ $transaction['source_account_iban'] ?? $transaction['source_account_name'] }}">{{ $transaction['source_account_name'] }}</a>
+             @endif
+         </td>
+-        <td class="{{ $className }}">
++        <td class="{{ $className }}" data-ff-col="destination">
+             @if('Cash account' == $transaction['destination_account_type'])
+                 <span class="text-success">({{ __('firefly.cash') }})</span>
+             @else
+@@ -179,14 +201,14 @@
+             @endif
+         </td>
+         @if($showCategory)
+-            <td class="d-xs-none {{ $className }}">
++            <td class="d-xs-none {{ $className }}" data-ff-col="category">
+                 @if(null !== $transaction['category_id'])
+                     <a href="{{ route('categories.show', [$transaction['category_id']]) }}" title="{{ $transaction['category_name'] }}">{{ $transaction['category_name'] }}</a>
+                 @endif
+             </td>
+         @endif
+         @if($showBudget)
+-            <td class="d-xs-none {{ $className }}">
++            <td class="d-xs-none {{ $className }}" data-ff-col="budget">
+                 @if(null !== $transaction['budget_id'])
+                 <a href="{{ route('budgets.show', [$transaction['budget_id']]) }}"
+                    title="{{ $transaction['budget_name'] }}">{{ $transaction['budget_name'] }}</a>
+@@ -196,7 +218,7 @@
+ 
+         @if(1 === $group['count'])
+         <td class="d-xs-none {{ $className }} text-end">
+-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="journal_menu_{{ $transaction['transaction_journal_id'] }}" data-bs-toggle="dropdown" aria-expanded="false">{{ __('firefly.actions') }} <span class="caret"></span></button>
++                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="journal_menu_{{ $transaction['transaction_journal_id'] }}" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false">{{ __('firefly.actions') }} <span class="caret"></span></button>
+                 <ul class="dropdown-menu" aria-labelledby="journal_menu_{{ $transaction['transaction_journal_id'] }}">
+                     <li><a class="dropdown-item" href="{{ route('transactions.edit', [$group['id']]) }}?_from={{ urlencode($FF3_FROM) }}"><span class="bi bi-pencil"></span> {{ __('firefly.edit') }}</a></li>
+                     @if($transaction['transaction_type_type'] !== 'Opening balance' && $transaction['transaction_type_type'] !== 'Liability credit')
+@@ -234,21 +256,21 @@
+     <tfoot>
+     <tr>
+         @if($showCategory && $showBudget)
+-            <td colspan="9">
++            <td colspan="9" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="9">
+                 @if(method_exists($groups, 'links'))
+                     {{ $groups->links('pagination.bootstrap-4') }}
+                 @endif
+             </td>
+         @endif
+         @if($showCategory XOR $showBudget)
+-            <td colspan="8">
++            <td colspan="8" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="8">
+                 @if(method_exists($groups, 'links'))
+                     {{ $groups->links('pagination.bootstrap-4') }}
+                 @endif
+             </td>
+         @endif
+         @if(!$showCategory && !$showBudget)
+-            <td colspan="7">
++            <td colspan="7" data-ff-span="balance,date,source,destination,category,budget" data-ff-base="7">
+                 @if(method_exists($groups, 'links'))
+                     {{ $groups->links('pagination.bootstrap-4') }}
+                 @endif
+@@ -257,7 +279,7 @@
+         <td class="d-xs-none text-end">
+             <!-- Single button -->
+             <div class="action-menu d-none"> <!-- d-none -->
+-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="bottom_action_menu" data-bs-toggle="dropdown" aria-expanded="false">
++                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="bottom_action_menu" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false">
+                     {{ __('firefly.actions') }}<span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="bottom_action_menu">
+@@ -273,10 +295,77 @@
+     </tr>
+     </tfoot>
+ </table>
++</div>
+ @section('scripts')
+     @parent
+     <script nonce="{{ $JS_NONCE }}">
+         var cloneGroupUrl = '{{ route('transactions.clone') }}';
+         var cloneAndEditUrl = '{{ route('transactions.clone') }}?redirect=edit';
+     </script>
++    <script nonce="{{ $JS_NONCE }}">
++        // Column chooser for transaction lists. Hidden columns are stored per browser.
++        (function () {
++            if (window.ffColumnChooserLoaded) {
++                return;
++            }
++            window.ffColumnChooserLoaded = true;
++            var storageKey = 'ff3.transactionList.hiddenColumns';
++
++            function load() {
++                try {
++                    var value = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
++                    return Array.isArray(value) ? value : [];
++                } catch (e) {
++                    return [];
++                }
++            }
++
++            function save(hidden) {
++                try {
++                    window.localStorage.setItem(storageKey, JSON.stringify(hidden));
++                } catch (e) {
++                    // storage unavailable: the choice lasts until the page is reloaded
++                }
++            }
++
++            function apply(hidden) {
++                document.querySelectorAll('table.ff-groups-large').forEach(function (table) {
++                    var present = [];
++                    table.querySelectorAll('th[data-ff-col]').forEach(function (th) {
++                        present.push(th.dataset.ffCol);
++                    });
++                    table.querySelectorAll('[data-ff-col]').forEach(function (cell) {
++                        cell.classList.toggle('d-none', hidden.indexOf(cell.dataset.ffCol) !== -1);
++                    });
++                    table.querySelectorAll('[data-ff-span]').forEach(function (cell) {
++                        var removed = cell.dataset.ffSpan.split(',').filter(function (key) {
++                            return present.indexOf(key) !== -1 && hidden.indexOf(key) !== -1;
++                        }).length;
++                        cell.colSpan = Math.max(1, parseInt(cell.dataset.ffBase, 10) - removed);
++                    });
++                });
++                document.querySelectorAll('input[data-ff-toggle]').forEach(function (input) {
++                    input.checked = hidden.indexOf(input.dataset.ffToggle) === -1;
++                });
++            }
++
++            document.addEventListener('change', function (event) {
++                var input = event.target;
++                if (!input.matches || !input.matches('input[data-ff-toggle]')) {
++                    return;
++                }
++                var key = input.dataset.ffToggle;
++                var hidden = load().filter(function (item) {
++                    return item !== key;
++                });
++                if (!input.checked) {
++                    hidden.push(key);
++                }
++                save(hidden);
++                apply(hidden);
++            });
++
++            apply(load());
++        })();
++    </script>
+     @endsection

@@ -1,0 +1,11 @@
+# Example: mount the patched templates into the Firefly III app container.
+# Save as compose.override.yaml next to your compose file (Docker Compose
+# merges it automatically) or copy the volume lines into your own file.
+# Adjust the service name ("app") and the path to this repository.
+services:
+  app:
+    volumes:
+      # Fix 1: month boxes below the transaction list (stops the overlap)
+      - ./firefly-iii-list-patches/views/transactions/index.blade.php:/var/www/html/resources/views/transactions/index.blade.php:ro
+      # Fix 2: column chooser (gear icon) + horizontal scroll as a fallback
+      - ./firefly-iii-list-patches/views/components/lists/groups-large.blade.php:/var/www/html/resources/views/components/lists/groups-large.blade.php:ro
